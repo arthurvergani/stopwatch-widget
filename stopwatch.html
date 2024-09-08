@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stopwatch for Notion</title>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: white;
+        width: 280px;
+        height: 80px;
+        margin: 0;
+      }
+      #timer {
+        font-size: 32px;
+        font-weight: 500;
+      }
+      .button-container {
+        display: flex;
+        gap: 10px;
+      }
+      .icon-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        background-color: transparent;
+      }
+      #playPauseButton {
+        background-color: #e6e0e9;
+      }
+      #resetButton {
+        border: 1px solid #79747e;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="timer">00:00</div>
+    <div class="button-container">
+      <button id="resetButton" class="icon-button">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"
+            fill="#49454F"
+          />
+        </svg>
+      </button>
+      <button id="playPauseButton" class="icon-button">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M8 5v14l11-7z" fill="#65558F" />
+        </svg>
+      </button>
+    </div>
+
+    <script>
+      let timer;
+      let isRunning = false;
+      let seconds = 0;
+      const timerElement = document.getElementById("timer");
+      const playPauseButton = document.getElementById("playPauseButton");
+      const resetButton = document.getElementById("resetButton");
+
+      function updateDisplay() {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        timerElement.textContent = `${minutes
+          .toString()
+          .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+
+        if (minutes >= 20) {
+          timerElement.style.color = "red";
+        } else {
+          timerElement.style.color = "#1D1B20";
+        }
+      }
+
+      function startTimer() {
+        if (!isRunning) {
+          isRunning = true;
+          timer = setInterval(() => {
+            seconds++;
+            updateDisplay();
+          }, 1000);
+          updatePlayPauseButton();
+        }
+      }
+
+      function stopTimer() {
+        if (isRunning) {
+          isRunning = false;
+          clearInterval(timer);
+          updatePlayPauseButton();
+        }
+      }
+
+      function resetTimer() {
+        stopTimer();
+        seconds = 0;
+        updateDisplay();
+      }
+
+      function updatePlayPauseButton() {
+        if (isRunning) {
+          playPauseButton.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="#65558F"/>
+                    </svg>
+                `;
+        } else {
+          playPauseButton.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 5v14l11-7z" fill="#65558F"/>
+                    </svg>
+                `;
+        }
+      }
+
+      playPauseButton.addEventListener("click", () => {
+        if (isRunning) {
+          stopTimer();
+        } else {
+          startTimer();
+        }
+      });
+
+      resetButton.addEventListener("click", resetTimer);
+    </script>
+  </body>
+</html>
